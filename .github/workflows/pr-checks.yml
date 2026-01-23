@@ -1,0 +1,34 @@
+name: Pull Request Tests 🛠️
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code 🗄️
+        uses: actions/checkout@v4
+
+      - name: Set up Python 🐍
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv ⚙️
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies 📦
+        run: uv sync
+
+      - name: Run lint check 🧹
+        run: uv run ruff check
+
+      - name: Run type check 🔎
+        run: uv run ty check -v
+
+      - name: Run tests 🧪
+        run: uv run pytest
