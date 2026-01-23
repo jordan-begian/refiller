@@ -1,0 +1,51 @@
+name: Pull Request Tests 🛠️
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pr_check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code 🗄️
+        uses: actions/checkout@v4
+
+      - name: Setup Python & uv 🐍
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies 📦
+        run: uv sync
+
+      - name: Run lint check 🧹
+        run: uv run ruff check
+
+      - name: Run type check 🔎
+        run: uv run ty check -v
+
+      - name: Run tests 🧪
+        run: uv run pytest
+
+  dependabot_pr:
+    needs: pr_check
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Approve Dependabot PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge Dependabot PR
+        run: gh pr merge --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
