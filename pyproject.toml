@@ -11,10 +11,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pytest>=9.0.2",
+    "pytest>=9.1.0",
     "pytest-asyncio>=1.4.0",
-    "ruff>=0.15.16",
-    "ty>=0.0.48",
+    "ruff>=0.15.17",
+    "ty>=0.0.50",
 ]
 
 [tool.pytest.ini_options]
